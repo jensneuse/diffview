@@ -5,6 +5,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 )
@@ -44,73 +45,83 @@ func (d DiffViewer) bFileName(name string) string {
 	return d._bFileName
 }
 
-func (d *DiffViewer) files(name string) (a, b *os.File, err error) {
+func (d *DiffViewer) files(name string) (a, b *os.File) {
+	var err error
 	d.aFile, err = os.OpenFile(d.aFileName(name), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	d.bFile, err = os.OpenFile(d.bFileName(name), os.O_RDWR|os.O_CREATE, os.ModePerm)
-	return d.aFile, d.bFile, err
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return d.aFile, d.bFile
 }
 
-func (d *DiffViewer) cleanup(name string) error {
+func (d *DiffViewer) cleanup(name string) {
 	err := os.Remove(d.aFileName(name))
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 	err = os.Remove(d.bFileName(name))
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return err
 }
 
-func (d DiffViewer) DiffViewBytes(name string, a, b []byte) error {
+func (d DiffViewer) DiffViewBytes(name string, a, b []byte) {
 
-	aFile, bFile, err := d.files(name)
+	var err error
+	aFile, bFile := d.files(name)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	_, err = bytes.NewBuffer(a).WriteTo(aFile)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	_, err = bytes.NewBuffer(b).WriteTo(bFile)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	err = aFile.Close()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	err = bFile.Close()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	err = d.opener.open(d.aFileName(name), d.bFileName(name))
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	return d.cleanup(name)
+	d.cleanup(name)
 }
 
-func (d DiffViewer) DiffViewReader(name string, a, b io.Reader) error {
+func (d DiffViewer) DiffViewReader(name string, a, b io.Reader) {
 	aBytes, err := ioutil.ReadAll(a)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
+
 	bBytes, err := ioutil.ReadAll(b)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	return d.DiffViewBytes(name, aBytes, bBytes)
+	d.DiffViewBytes(name, aBytes, bBytes)
 }
 
-func (d DiffViewer) DiffViewAny(name string, a, b interface{}) error {
+func (d DiffViewer) DiffViewAny(name string, a, b interface{}) {
 
 	var aBuff bytes.Buffer
 	spew.Fdump(&aBuff, a)
@@ -118,5 +129,5 @@ func (d DiffViewer) DiffViewAny(name string, a, b interface{}) error {
 	var bBuff bytes.Buffer
 	spew.Fdump(&bBuff, b)
 
-	return d.DiffViewBytes(name, aBuff.Bytes(), bBuff.Bytes())
+	d.DiffViewBytes(name, aBuff.Bytes(), bBuff.Bytes())
 }

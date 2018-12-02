@@ -25,8 +25,5 @@ bar`
 )
 
 func TestGolandDiffView(t *testing.T) {
-	err := NewGoland().DiffViewBytes("test", []byte(a), []byte(b))
-	if err != nil {
-		t.Fatal(err)
-	}
+	NewGoland().DiffViewBytes("test", []byte(a), []byte(b))
 }
