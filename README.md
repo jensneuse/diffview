@@ -1,6 +1,8 @@
 # diffview
 
-I did a lot of testing recently where I had to compare complex structs and or strings. I really like the GoLand diff viewer. I really hated to copy stuff from the console to two files in order to use the GoLand diff view. So here is diffview.
+I did a lot of testing recently where I had to compare complex structs and or strings.
+I really like the GoLand diff viewer.
+I absolutely hated to copy stuff from the console to two files in order to use the GoLand diff view. So here is diffview.
 
 ## usage
 
