@@ -2,7 +2,7 @@
 
 This library opens your favourite diff viewer directly from your tests.
 
-# why
+## why
 
 I did a lot of testing recently where I had to compare complex structs and or strings.
 
@@ -10,7 +10,7 @@ I really like the GoLand diff viewer.
 
 I absolutely hated to copy stuff from the console to two files in order to use the GoLand diff view. So here is diffview.
 
-# current caveats
+## current caveats
 
 It should not run from within CI. I guess a testing flag should do.
 I'll fix this soon/contributions welcome.
@@ -38,6 +38,6 @@ func TestGolandDiffView(t *testing.T) {
 }
 ```
 
-# contributing
+## contributing
 
 Feel free to add Openers for different operating systems/diff view tools.
